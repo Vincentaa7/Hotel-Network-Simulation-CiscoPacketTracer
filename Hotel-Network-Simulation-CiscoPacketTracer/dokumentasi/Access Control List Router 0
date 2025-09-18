@@ -1,0 +1,56 @@
+!
+! =========================================
+! Access Control List (ACL) - Hotel Network
+! Author : Vincent Alfian Artha
+! Deskripsi : 
+!   - Membatasi akses tamu (192.168.40.0/24) 
+!     agar tidak bisa masuk ke Server Hotel (192.168.20.0/24)
+!   - Tamu tetap bisa akses Server Internet (192.168.10.0/24)
+!   - Jaringan Kantor Hotel tetap bisa akses ke semua server
+! =========================================
+!
+
+! Masuk ke konfigurasi router
+enable
+configure terminal
+
+! Buat Extended ACL bernomor 110
+ip access-list extended TAMU-RESTRICTION
+
+ ! 1. Blokir semua koneksi dari jaringan tamu (192.168.40.0/24)
+ !    menuju server hotel (192.168.20.0/24)
+ deny ip 192.168.40.0 0.0.0.255 192.168.20.0 0.0.0.255
+
+ ! 2. Izinkan jaringan tamu (192.168.40.0/24) 
+ !    menuju server internet (192.168.10.0/24)
+ permit ip 192.168.40.0 0.0.0.255 192.168.10.0 0.0.0.255
+
+ ! 3. Izinkan lalu lintas lain supaya tidak terblokir
+ permit ip any any
+
+exit
+
+! Terapkan ACL ke interface Router 0
+! Interface ini adalah gateway jaringan tamu (misalnya GigabitEthernet0/0/1)
+interface GigabitEthernet0/0/1
+ ip access-group TAMU-RESTRICTION in
+exit
+
+! Simpan konfigurasi
+write memory
+
+!
+! =========================================
+! Verifikasi
+! =========================================
+! Lihat ACL yang sudah dibuat:
+show access-lists
+
+! Lihat ACL yang diterapkan di interface:
+show running-config | include access-group
+
+! Test:
+! - Dari Laptop Tamu ping Server Internet (192.168.10.x) → HARUS SUKSES
+! - Dari Laptop Tamu ping Server Hotel (192.168.20.x) → HARUS GAGAL
+! - Dari PC Admin/Resepsionis ping semua server → HARUS SUKSES
+!
