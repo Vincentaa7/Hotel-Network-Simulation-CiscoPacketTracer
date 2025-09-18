@@ -25,4 +25,4 @@ Proyek ini merupakan **simulasi jaringan hotel** menggunakan Cisco Packet Tracer
 1. Install [Cisco Packet Tracer](https://www.netacad.com/courses/packet-tracer).
 2. Clone repo ini:
    ```bash
-   git clone https://github.com/username/Hotel-Network-Simulation-CiscoPacketTracer.git
+   git clone https://github.com/Vincentaa7/Hotel-Network-Simulation-CiscoPacketTracer.git
